@@ -1,10 +1,7 @@
 /*
  * Configuración de las inducciones de Inventario · Alto Sur
- *
- * Pegá entre las comillas la URL de la aplicación web de Apps Script
- * (termina en /exec). Ver README.md, paso 2.
  * Las dos inducciones (personal y encargados) usan esta misma URL.
  */
 window.INDUCCION_CONFIG = {
-  registroUrl: ''
+  registroUrl: 'https://script.google.com/macros/s/AKfycbxkAs9YJDkS2N0_SaizaSxWKvT-VSn_BFNQsK7oxb1rj6KsamHAYYQUtOxXdrUsmUZV/exec'
 };
