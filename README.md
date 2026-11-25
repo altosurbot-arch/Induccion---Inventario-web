@@ -58,3 +58,4 @@ Abrí cada inducción, completá nombre y sector, respondé el test y tocá **Co
 - El nombre lo escribe cada persona: no hay inicio de sesión. Si necesitás identificar a alguien con certeza, se puede agregar legajo o DNI.
 - Si cambiás el script, hacé **Implementar → Gestionar implementaciones → Editar → Nueva versión** para que tome los cambios sin cambiar la URL.
 - En el plan gratuito, GitHub Pages solo funciona con repositorios públicos: cualquiera con el enlace puede ver las inducciones. Los resultados quedan solo en tu planilla.
+Actualizado.
