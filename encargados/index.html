@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inducción Inventario · Encargados</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* VOICE: instructor de depósito hablándole a un par; rioplatense, voseo, directo.
+   IDEA: el manual de campo de Alto Sur hecho recorrido, ahora frente a la consola.
+   PICTURE: las pantallas reales de la consola en un marco de navegador, ampliables.
+   COLOUR and TYPE: grafito #1d1d1d, papel #f3f2ee, rojo Alto Sur #e3101d; Barlow Condensed + Inter.
+   LAYOUT: portada oscura, fila de módulos, cada módulo = pasos + captura; mensajes, estados, test. */
+:root{color-scheme:light dark;
+--bg:light-dark(#f3f2ee,#151515);--card:light-dark(#fff,#202020);--ink:light-dark(#1b1b1b,#efeeea);--mute:light-dark(#5d5b56,#a9a7a1);
+--line:light-dark(#dedcd5,#333);--dark:#1d1d1d;--red:#e3101d;--redt:light-dark(#c00c18,#ff5a63);--ok:light-dark(#1d7a3a,#5fd086);--warn:light-dark(#a24a00,#f0a050);--blue:light-dark(#1f4fbf,#7fa5ff);--soft:light-dark(#ebe9e3,#262626)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:"Barlow Condensed",Impact,sans-serif;font-weight:700;line-height:1.05;text-wrap:balance;margin:0;text-transform:uppercase}
+h2{font-size:clamp(32px,5vw,48px)}h3{font-size:24px;margin:28px 0 10px}
+h4{margin:22px 0 8px;font-size:17px}
+p{margin:0 0 12px;max-width:68ch}
+.band{padding:clamp(28px,4vw,64px) max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+.lead{font-size:18px;color:var(--mute);margin:12px 0 22px}
+.code{font-family:"JetBrains Mono",monospace;font-size:13px;background:var(--dark);color:#fff;padding:2px 7px;white-space:nowrap}
+b.ui{font-weight:600;background:var(--soft);padding:1px 6px;border-radius:3px}
+.scroll{overflow-x:auto}html{scroll-padding-top:72px;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+ul,ol{padding-left:22px}li{margin-bottom:4px}
+
+.hero{background:var(--dark);color:#f3f2ee;border-left:10px solid var(--red)}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(24px,5vw,64px);align-items:center}
+.hero img.logo{width:74px;margin-bottom:28px}
+.hero h1{font-size:clamp(44px,6.2vw,84px);overflow-wrap:anywhere}
+.hero h1 i{color:var(--red);font-style:normal}
+.hero .sub{font-size:19px;color:#cfcdc7;margin:18px 0 26px}
+.prog{display:flex;align-items:center;gap:14px;max-width:460px}
+.bar{flex:1;height:10px;background:#3a3a3a}.bar i{display:block;height:100%;width:0;background:var(--red);transition:width .5s}
+.prog span{font-family:"Barlow Condensed";font-size:22px;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 20px;font:600 16px Inter,sans-serif;border:1px solid currentColor;background:none;color:inherit;cursor:pointer;text-decoration:none}
+.btn.red{background:var(--red);border-color:var(--red);color:#fff;clip-path:polygon(0 0,100% 0,100% 70%,calc(100% - 12px) 100%,0 100%)}
+.btn:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+
+.shot{display:block;width:100%;padding:0;border:1px solid #3a3a3a;background:#0d0d0d;cursor:zoom-in;box-shadow:0 18px 40px rgba(0,0,0,.3);text-align:left}
+.shot::before{content:"";display:block;height:22px;background:#2a2a2a radial-gradient(circle at 12px 11px,#e3101d 4px,transparent 5px),radial-gradient(circle at 28px 11px,#777 4px,transparent 5px)}
+.shot img{display:block;width:100%;height:auto}
+.shot+small{display:block;color:var(--mute);font-size:13px;margin-top:6px}
+.hero .shot{border-color:#444}
+
+.nav{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line)}
+.nav .scroll{display:flex;gap:4px;padding:8px max(5vw,16px);max-width:1240px;margin:0 auto}
+.nav a{flex:none;display:flex;align-items:center;gap:6px;min-height:40px;padding:6px 12px;color:var(--ink);text-decoration:none;font-weight:500;font-size:14px;border:1px solid transparent}
+.nav a:hover{border-color:var(--line)}
+.nav a.done::before{content:"";width:8px;height:8px;background:var(--ok);border-radius:50%}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin-top:20px}
+.card{background:var(--card);border:1px solid var(--line);padding:22px}
+.rule{display:grid;grid-template-columns:52px minmax(0,1fr);gap:14px}
+.rule .n{font:700 46px/1 "Barlow Condensed";color:var(--red)}
+.rule p{margin:0}
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:14px 0 6px}
+.flow div{flex:1 1 150px;background:var(--card);border:1px solid var(--line);padding:14px}
+.flow div small{display:block;color:var(--mute);font-size:13px}
+.flow div strong{display:block;font-family:"Barlow Condensed";font-size:22px;text-transform:uppercase;line-height:1.1}
+.flow .arrow{flex:0 0 auto;background:none;border:0;padding:0;display:flex;align-items:center;font-size:22px;color:var(--mute)}
+.st{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.st::before{content:"";width:9px;height:9px;background:currentColor;flex:none}
+.st.ok{color:var(--ok)}.st.bad{color:var(--redt)}.st.wait{color:var(--blue)}.st.warn{color:var(--warn)}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);font-size:15px}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;font-size:13px;color:var(--mute)}
+
+.mod{border-top:1px solid var(--line)}
+.mod:nth-of-type(even){background:var(--card)}
+.mod .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(24px,4vw,56px);align-items:start}
+.mod .pics{position:sticky;top:80px;display:grid;gap:18px}
+.mod .num{font:600 18px "Barlow Condensed";color:var(--red);margin-bottom:4px}
+ol.steps{list-style:none;counter-reset:s;padding:0;margin:0 0 18px}
+ol.steps>li{counter-increment:s;position:relative;padding:0 0 14px 48px;margin:0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:-2px;width:32px;height:32px;display:grid;place-items:center;background:var(--dark);color:#fff;font:700 18px "Barlow Condensed"}
+ol.steps ul{margin:6px 0 0}
+.note{border-left:4px solid var(--red);background:var(--soft);padding:16px 18px;margin:0 0 18px}
+.note.info{border-color:var(--blue)}
+.note h4{margin:0 0 6px;font-size:15px}
+.note>*:last-child{margin-bottom:0}
+.note ul{margin:6px 0 0}
+.seen{margin-top:10px}
+.seen[aria-pressed=true]{background:var(--ok);border-color:var(--ok);color:#fff}
+
+.quiz{background:var(--dark);color:#f3f2ee}
+.quiz .q{background:#262626;border:1px solid #3a3a3a;padding:20px;margin:14px 0 0}
+.quiz .q p{font-weight:600;margin-bottom:12px}
+.quiz label.opt{display:flex;gap:10px;align-items:flex-start;min-height:44px;padding:10px 12px;border:1px solid #444;margin-top:8px;cursor:pointer}
+.quiz input[type=radio]{width:18px;height:18px;margin-top:3px;accent-color:var(--red);flex:none}
+.quiz label.right{border-color:#5fd086;background:rgba(95,208,134,.12)}
+.quiz label.wrong{border-color:#ff5a63;background:rgba(255,90,99,.12)}
+.quiz .why{display:none;margin-top:10px;color:#cfcdc7;font-size:15px}
+.quiz .checked .why{display:block}
+.who{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px;margin-top:22px}
+.fld{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:14px}
+.fld input,.fld select{font:16px Inter,sans-serif;min-height:46px;padding:10px 12px;background:#262626;color:#f3f2ee;border:1px solid #555}
+.score{font:700 clamp(40px,6vw,64px)/1 "Barlow Condensed";margin-top:24px}
+.saved{font-weight:600}.saved.ok{color:#5fd086}.saved.err{color:#ff8a90}
+.foot{background:var(--dark);color:#a9a7a1;border-top:1px solid #333;font-size:14px}
+.foot .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between}
+.foot a{color:#f3f2ee}
+
+dialog{border:0;padding:0;background:transparent;max-width:min(1400px,96vw);max-height:94vh}
+dialog::backdrop{background:rgba(0,0,0,.85)}
+dialog img{display:block;max-width:100%;max-height:86vh;margin:auto}
+dialog p{color:#f3f2ee;text-align:center;margin:10px auto 0}
+dialog button{position:fixed;top:14px;right:14px;width:44px;height:44px;font-size:24px;background:#1d1d1d;color:#fff;border:1px solid #555;cursor:pointer}
+
+@media(max-width:900px){.hero .wrap,.mod .wrap{grid-template-columns:minmax(0,1fr)}.mod .pics{position:static;order:-1}}
+@media(max-width:600px){table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flow-root;border:0;padding:3px 12px;padding-inline-start:8.5em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:7.5em;margin-inline-start:-8em;white-space:normal;color:var(--mute);font-size:12px}.stack td:empty{display:none}
+.flow .arrow{transform:rotate(90deg);flex-basis:100%;justify-content:center}.hero{border-left-width:6px}}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+<script src="../config.js"></script>
+</head>
+<body>
+
+<header class="band hero">
+  <div class="wrap">
+    <div>
+      <a href="../" aria-label="Volver al inicio"><img class="logo" src="img/logo.png" alt="Alto Sur"></a>
+      <h1>Inducción<br>Encargados<i>.</i></h1>
+      <p class="sub">Para encargados de sector. Cómo dar de alta, recibir, validar, liberar y controlar los equipos de tu sector desde la consola de <strong>inventario.altosur.com.ar</strong>. Unos 40 minutos.</p>
+      <div class="prog" aria-live="polite"><div class="bar"><i id="pbar"></i></div><span id="ptxt">0 de 11 módulos</span></div>
+      <div class="acts"><a class="btn red" href="#empezar">Empezar la inducción</a><a class="btn" href="#test">Ir al test final</a></div>
+    </div>
+    <div><button class="shot" type="button" data-cap="Inicio de la consola"><img src="img/inicio.jpg" alt="Pantalla Inicio de la consola con críticos, indicadores y prioridades"></button></div>
+  </div>
+</header>
+
+<nav class="nav" aria-label="Módulos"><div class="scroll" id="nav"></div></nav>
+
+<section class="band" id="empezar">
+  <div class="wrap">
+    <h2>Tu rol y la consola</h2>
+    <p class="lead">El personal retira, devuelve, inspecciona y reporta desde el celular. Vos <strong>das de alta, recibís, validás, aprobás y controlás los vencimientos de tu sector</strong> desde la consola, en la computadora. Casi todo lo que hace el personal queda esperando tu confirmación.</p>
+
+    <h3>Cómo está armada la consola</h3>
+    <div class="grid2">
+      <div class="card"><h4 style="margin-top:0">Menú de la izquierda</h4><p>Inicio · Equipos · Materiales · Bolsos · Préstamos · Controles · Importar · Auditoría · Tablero.</p></div>
+      <div class="card"><h4 style="margin-top:0">Selector de sector</h4><p>Todos los sectores / Operaciones / Capacitaciones. Filtra todas las pantallas.</p></div>
+      <div class="card"><h4 style="margin-top:0">Operador / Personal</h4><p>La consola no tiene botones para retirar ni para pedir equipos al otro sector. Para eso pasá a <b class="ui">Personal</b>; para volver, tocá <b class="ui">Vista operador</b>.</p></div>
+    </div>
+
+    <h3>Cuatro reglas para no perderse</h3>
+    <div class="grid2">
+      <div class="card rule"><span class="n">1</span><p><strong>Toda acción del personal la confirmás vos.</strong> Hasta entonces el equipo queda en un estado intermedio (tabla de abajo).</p></div>
+      <div class="card rule"><span class="n">2</span><p><strong>Recibido no es lo mismo que apto.</strong> Un equipo que vuelve con daño se recibe igual, pero queda No disponible hasta que se inspecciona y se libera.</p></div>
+      <div class="card rule"><span class="n">3</span><p><strong>Un equipo nuevo empieza bloqueado.</strong> Pasa por relevamiento y habilitación antes de poder retirarse.</p></div>
+      <div class="card rule"><span class="n">4</span><p><strong>Cada sector maneja lo suyo.</strong> Para usar un equipo del otro sector se pide un préstamo entre sectores, y lo decide el encargado del sector dueño.</p></div>
+    </div>
+    <div class="scroll" style="margin-top:20px"><table class="stack">
+      <thead><tr><th>El personal…</th><th>Estado mientras tanto</th><th>Vos…</th></tr></thead>
+      <tbody>
+        <tr><td>declara una devolución</td><td><span class="st wait">En recepción</span> — el equipo sigue a su cargo</td><td>recibís la devolución</td></tr>
+        <tr><td>envía una inspección</td><td><span class="st wait">Por validar</span> — la fecha de control no cambia</td><td>validás la inspección</td></tr>
+        <tr><td>propone un bolso</td><td><span class="st wait">Armado pendiente</span></td><td>aprobás el bolso</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Cómo se habilita cada tipo de equipo</h3>
+    <div class="scroll"><table class="stack">
+      <thead><tr><th>Tipo</th><th>Qué incluye</th><th>¿Checklist?</th><th>Cómo se habilita</th><th>Controles habituales</th></tr></thead>
+      <tbody>
+        <tr><td><strong>EPP</strong></td><td>Arnés, casco, cuerda, conector</td><td>Sí: Bien / Observación / Mal</td><td>Inspección Apto validada con <b class="ui">Aprobar y liberar</b></td><td>Inspección periódica, vida útil</td></tr>
+        <tr><td><strong>Equipo / instrumento</strong></td><td>Detectores, herramientas, instrumentos</td><td>Sí, igual que un EPP</td><td>Igual que un EPP</td><td>Inspección o calibración periódica, vida útil</td></tr>
+        <tr><td><strong>Vehículo</strong></td><td>Camionetas propias o alquiladas</td><td>No</td><td><b class="ui">Liberar equipo</b> (Liberación técnica)</td><td>VTV (principal), seguro, pago del seguro, matafuego, service, patente</td></tr>
+        <tr><td><strong>Bolso</strong></td><td>Conjunto de equipos que se retira junto</td><td>No, se revisa su contenido</td><td>Al aprobar el armado queda listo</td><td>Depende de su contenido</td></tr>
+        <tr><td><strong>Material</strong></td><td>Guantes, cintas, eslingas (por cantidad)</td><td>No</td><td><b class="ui">Verificar conteo</b></td><td>Vencimiento del lote</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="note info" style="margin-top:20px">
+      <h4>Qué es la Liberación técnica</h4>
+      <p>Es tu confirmación de que un equipo está en condiciones de usarse. Se hace desde la ficha con <b class="ui">Liberar equipo</b>, escribiendo una <strong>Conclusión técnica</strong> (qué se revisó). El documento de respaldo es opcional.</p>
+      <ul>
+        <li>Es el paso normal para <strong>vehículos</strong>, que no tienen checklist. También para un vehículo con <em>Requiere inspección</em>, después de revisarlo.</li>
+        <li>Un <strong>bolso</strong> queda listo al aprobar su armado; solo necesita liberación si quedó bloqueado (por ejemplo, por un daño reportado).</li>
+        <li>En <strong>EPP y equipos</strong> solo funciona si ya hay una inspección Apto validada. Lo habitual es usar directamente <b class="ui">Aprobar y liberar</b>.</li>
+        <li><strong>No sirve para saltear un vencimiento.</strong> La app la rechaza si falta el relevamiento, si hay un control obligatorio vencido o sin fecha, o una inspección con observaciones sin revisar. En un bolso, además, todo el contenido tiene que estar apto y completo.</li>
+      </ul>
+    </div>
+    <p style="color:var(--mute)">Si un botón no te aparece, tu perfil no lo tiene habilitado: pedíselo a Administración.</p>
+  </div>
+</section>
+
+<main id="mods"></main>
+
+<section class="band" id="mensajes">
+  <div class="wrap">
+    <h2>Mensajes de bloqueo y cómo resolverlos</h2>
+    <p class="lead">Aparecen en Inicio, en la ficha del equipo y en "No disponible para retiro". Buscá el mensaje y seguí la columna de la derecha.</p>
+    <label class="fld" style="max-width:420px;margin-bottom:14px">Buscar mensaje<input id="buscar" type="search" placeholder="Ej.: vencido, inspección, bolso" style="background:var(--card);color:var(--ink);border-color:var(--line)"></label>
+    <div class="scroll"><table class="stack">
+      <thead><tr><th>Mensaje</th><th>Tipo de equipo</th><th>Qué hacer</th></tr></thead>
+      <tbody id="msgs"></tbody>
+    </table></div>
+    <p id="nomsg" hidden style="margin-top:12px;color:var(--mute)">No hay mensajes con esa palabra.</p>
+
+    <h3 style="margin-top:40px">Errores al liberar o aprobar</h3>
+    <div class="scroll"><table class="stack">
+      <thead><tr><th>Error</th><th>Qué hacer</th></tr></thead>
+      <tbody>
+        <tr><td><strong>"El control principal no tiene fecha vigente. Renovalo antes de liberar."</strong></td><td>Renová el control principal. En EPP y equipos también podés completar Próximo control al aprobar la inspección.</td></tr>
+        <tr><td><strong>"Hay otros controles vencidos o restricciones vigentes."</strong></td><td>Hay otro control obligatorio vencido, o una inspección con observaciones sin revisar.</td></tr>
+        <tr><td><strong>"Para liberar: con nota"</strong></td><td>Completá la Nota de la inspección.</td></tr>
+        <tr><td><strong>"Para liberar: otra persona debe aprobar"</strong></td><td>La aprobación la tiene que hacer alguien distinto de quien inspeccionó.</td></tr>
+        <tr><td><strong>"Para liberar: verificar presencia"</strong></td><td>Falta el relevamiento.</td></tr>
+        <tr><td><strong>"Hay otra inspección con observaciones pendiente."</strong></td><td>Revisá primero la inspección No apto o Con observaciones.</td></tr>
+        <tr><td><strong>"Validá una inspección apta antes de liberar el equipo."</strong></td><td>En EPP y equipos, primero tiene que haber una inspección Apto aprobada.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<section class="band" id="estados" style="background:var(--card);border-top:1px solid var(--line)">
+  <div class="wrap">
+    <h2>Estados</h2>
+    <p class="lead">Qué significa cada estado y quién lo resuelve.</p>
+    <div class="scroll"><table class="stack">
+      <thead><tr><th>Estado</th><th>Significado</th><th>Quién lo resuelve</th></tr></thead>
+      <tbody id="estrows"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<section class="band quiz" id="test">
+  <div class="wrap">
+    <h2>Test final</h2>
+    <p style="color:#cfcdc7;margin-top:12px">Doce preguntas sobre situaciones reales de la consola. Se aprueba con 10. Completá tus datos, respondé todo y tocá <strong>Corregir</strong>.</p>
+    <div class="who">
+      <label class="fld">Nombre y apellido<input id="nombre" autocomplete="name"></label>
+      <label class="fld">Sector<select id="sector"><option value="">Elegí tu sector</option><option>Operaciones</option><option>Capacitaciones</option></select></label>
+    </div>
+    <form id="quiz"></form>
+    <div class="acts"><button class="btn red" id="check" type="button">Corregir</button><button class="btn" id="reset" type="button" style="color:#f3f2ee">Volver a empezar</button></div>
+    <div class="score" id="score" aria-live="polite"></div>
+    <p id="verdict" style="color:#cfcdc7"></p>
+    <p id="saved" class="saved" aria-live="polite"></p>
+  </div>
+</section>
+
+<footer class="band foot">
+  <div class="wrap"><span>Uso interno · Alto Sur S.R.L. · Basado en la Guía de uso, noviembre 2026</span><span><a href="../">Volver al inicio</a> · <a href="../personal/">Inducción para el personal</a></span></div>
+</footer>
+
+<dialog id="zoom"><button type="button" id="zclose" aria-label="Cerrar">×</button><img id="zimg" alt=""><p id="zcap"></p></dialog>
+
+<script>
+{
+const pic=(f,c)=>`<div><button class="shot" type="button" data-cap="${c}"><img src="img/${f}.jpg" alt="Pantalla ${c}" loading="lazy"></button><small>${c} · tocá para ampliar</small></div>`;
+const ol=a=>`<ol class="steps">${a.map(s=>`<li>${s}</li>`).join('')}</ol>`;
+const note=(h,b,k)=>`<div class="note ${k||''}"><h4>${h}</h4>${b}</div>`;
+
+const M=[
+{id:'inicio',n:'2.1',t:'Inicio: la lista de tareas',pics:[['inicio','Inicio']],body:`
+<p class="lead">Es tu tablero del día. Todo lo que necesita tu atención aparece acá, con un botón que te lleva directo a resolverlo.</p>
+<div class="scroll"><table class="stack"><thead><tr><th>Bloque</th><th>Qué significa</th></tr></thead><tbody>
+<tr><td><strong>Críticos</strong></td><td>Equipos que hoy no se pueden usar y requieren una acción.</td></tr>
+<tr><td><strong>Indicadores</strong></td><td>Relevado, Disponibles, Controles no vigentes, Préstamos atrasados, Incidentes abiertos e Inspecciones por validar. Cada uno se toca para ver el detalle.</td></tr>
+<tr><td><strong>Prioridades</strong></td><td>Una fila por tarea. Se filtra con Críticos · Devoluciones · Por vencer · Por validar.</td></tr>
+<tr><td><strong>Vencimientos próximos</strong></td><td>Controles que entran en su período de aviso (30 días, salvo que el control tenga otra anticipación).</td></tr>
+<tr><td><strong>Últimos cambios</strong></td><td>Las acciones más recientes. <b class="ui">Ver historial</b> muestra todas.</td></tr>
+</tbody></table></div>
+${note('Rutina diaria','<p>Trabajá <strong>Prioridades</strong> de arriba hacia abajo. Cada botón de fila (<b class="ui">Recibir devolución</b>, <b class="ui">Revisar inspección</b>, <b class="ui">Renovar control</b>, <b class="ui">Revisar solicitud</b>) abre directamente la tarea.</p>','info')}`},
+
+{id:'alta',n:'2.2',t:'Dar de alta equipos',pics:[['registrar','Registrar equipo'],['importar','Importar'],['verificar-presencia','Verificar presencia']],body:`
+<p class="lead">Un equipo pasa por tres pasos antes de quedar Disponible.</p>
+<div class="flow" role="list"><div role="listitem"><small>Paso 1</small><strong>Registrar o importar</strong></div><div class="arrow" aria-hidden="true">→</div><div role="listitem"><small>Paso 2</small><strong>Relevamiento</strong>Encontrado</div><div class="arrow" aria-hidden="true">→</div><div role="listitem"><small>Paso 3</small><strong>Habilitación</strong></div><div class="arrow" aria-hidden="true">→</div><div role="listitem"><small>Listo</small><strong>Disponible</strong></div></div>
+<h4>Paso 1 · Registrar o importar</h4>
+<p><strong>Uno por uno:</strong> en Equipos, tocá <b class="ui">Registrar equipo</b>. Completá Código, Nombre, Tipo, Sector, Ubicación y Motivo. Opcional: próximo control, inspección cada (días), checklist, foto y datos adicionales.</p>
+<p><strong>Muchos a la vez:</strong> en Importar, tocá <b class="ui">Cargar archivo</b>.</p>
+${ol(['Tocá <b class="ui">Elegir archivo</b> y subí un CSV o XLSX.','Revisá la asignación de columnas.','Corregí las filas con errores. El botón no se habilita mientras haya errores.','Tocá <b class="ui">Confirmar N equipos</b> (o vehículos).'])}
+<p><b class="ui">Descargar plantilla</b> tiene dos formatos: Equipos y Vehículos. Los avisos (por ejemplo una VTV vencida) no impiden importar.</p>
+<h4>Paso 2 · Relevamiento</h4>
+<p>Desde Inicio, tocá <b class="ui">Verificar presencia</b>. También desde Auditoría → Qué falta → Verificar, o desde la ficha con Verificar inventario.</p>
+${ol(['Elegí un relevamiento abierto, o tocá <b class="ui">Iniciar relevamiento</b>.','Elegí <b class="ui">Encontrado</b>, o <b class="ui">Registrar diferencia</b> con una observación.'])}
+<h4>Paso 3 · Habilitación</h4>
+<p>Después de "Encontrado", Inicio y la ficha muestran el paso que falta. Seguilo en este orden:</p>
+${ol([
+'<strong>"Requiere inspección"</strong>: el archivo o la ficha indicaban un daño (por ejemplo "visera rota") o el estado "Vencido".<ul><li>EPP y equipos: inspección con la <strong>Nota</strong> completa, aprobada por <strong>otra persona</strong>. Si inspeccionaste vos, pedile la aprobación a otro encargado o a Administración.</li><li>Vehículos: revisalo y tocá <b class="ui">Liberar equipo</b>.</li></ul>',
+'<strong>"Control sin fecha", "Fecha de control pendiente" o "Control vencido"</strong>: se cargó sin "Próxima inspección" o con una fecha vencida.<ul><li>EPP y equipos: al validar con <b class="ui">Aprobar y liberar</b>, la app pide el Próximo control.</li><li>Vehículos y bolsos: tocá <b class="ui">Renovar</b> en el control principal antes de liberar.</li></ul>',
+'<strong>"Certificado pendiente"</strong>: hay otro control obligatorio vencido (por ejemplo el seguro). Renovalo.',
+'<strong>"Inspección pendiente"</strong> (EPP y equipos): registrá una inspección, o pedile a alguien del sector que la haga, y validala con <b class="ui">Aprobar y liberar</b>. Si el equipo tiene "Inspección cada (días)", aprobarla también fija el próximo vencimiento.',
+'<strong>"Habilitación técnica pendiente"</strong> (vehículos y bolsos, o EPP con la inspección ya aprobada): en la ficha, tocá <b class="ui">Liberar equipo</b> y escribí la conclusión.'])}
+${note('Ejemplos','<ul><li><strong>Vehículo importado con la VTV vencida:</strong> Encontrado → Renovar VTV → Liberar equipo.</li><li><strong>Casco importado con observación de daño:</strong> Encontrado → inspección con nota → otra persona toca Aprobar y liberar.</li></ul>','info')}`},
+
+{id:'equipos',n:'2.3',t:'Equipos y ficha del equipo',pics:[['equipos','Equipos'],['ficha','Ficha del equipo']],body:`
+<p class="lead"><strong>Equipos</strong> muestra todo el inventario. Buscá por nombre, código o serie, filtrá por estado (Disponibles, Sin relevar, No disponibles, Devueltos) e imprimí <b class="ui">etiquetas QR</b> y la <b class="ui">Planilla de conteo</b>.</p>
+<h4>La ficha del equipo</h4>
+<div class="scroll"><table class="stack"><thead><tr><th>Sección</th><th>Qué muestra o permite</th></tr></thead><tbody>
+<tr><td><strong>Estado y paso principal</strong></td><td>Por qué no está disponible y el botón para resolverlo (Registrar inspección, Liberar equipo, Renovar control).</td></tr>
+<tr><td><strong>Datos y acciones</strong></td><td><b class="ui">Editar ficha</b> cambia datos descriptivos y siempre pide un motivo. <b class="ui">Seguimiento</b> anota una tarea pendiente.</td></tr>
+<tr><td><strong>Controles</strong></td><td>Cada vencimiento con Renovar, Marcar pagado, Agendar turno y Editar.</td></tr>
+<tr><td><strong>Ubicación</strong></td><td>Dónde está y quién lo tiene.</td></tr>
+<tr><td><strong>Documentos</strong></td><td>Documentos y fotos, Etiqueta QR e Imprimir etiqueta.</td></tr>
+<tr><td><strong>Historial</strong></td><td>Todo lo que le pasó al equipo.</td></tr>
+</tbody></table></div>
+<h4>Editar ficha</h4>
+<ul><li>El Código, el Tipo y el Sector no se pueden cambiar.</li><li>Si escribís un daño en el Nombre u Observaciones ("rota", "golpe"), el equipo queda en <strong>Requiere inspección</strong>.</li><li>Si cambiás el Fin de vida útil, queda <strong>Cambio de vida útil pendiente de liberación</strong>.</li></ul>
+<h4>Vehículos alquilados</h4>
+<ul><li><b class="ui">Devolver al proveedor</b>: deja de generar alertas y de aparecer en el listado (se ve con el filtro Devueltos).</li><li>Cuando vuelve, <b class="ui">Reincorporar</b>: vuelve a pasar por relevamiento y liberación.</li></ul>
+${note('Dar de baja: no se puede deshacer','<p>En Editar ficha, marcá <strong>Dar de baja permanentemente</strong> y escribí el motivo. El equipo no puede estar prestado.</p>')}
+${note('Seguimiento','<p>Sirve para anotar una tarea pendiente (responsable y detalle). <strong>No libera el equipo.</strong> Para marcarlo Completar hay que adjuntar un archivo.</p>','info')}`},
+
+{id:'devoluciones',n:'2.4',t:'Recibir devoluciones',pics:[['prestamos','Préstamos'],['recepcion','Verificar recepción']],body:`
+<p class="lead">Préstamos tiene tres filtros: Activos, Atrasados y Recepción pendiente.</p>
+${ol(['Cuando la persona trae el equipo, tocá <b class="ui">Recibir N equipo</b>.','Marcá cada elemento:<ul><li><strong>Recibido.</strong></li><li><strong>Con daño:</strong> queda en cuarentena, No disponible, y se abre un incidente.</li><li><strong>Falta:</strong> queda pendiente de recepción y a cargo de la persona.</li></ul>','Tocá <b class="ui">Confirmar N recibidos</b>.'])}
+${note('Si la persona ya declaró daño','<p><strong>Recibido</strong> aparece deshabilitado y tenés que elegir <strong>Con daño</strong>. El préstamo se cierra cuando se recibe todo.</p>')}
+${note('Si trajo el equipo pero no declaró la devolución','<p>Por ejemplo, se olvidó o no tiene el celular: en el préstamo tocá <b class="ui">Ver</b> y después <b class="ui">Registrar devolución</b>. Recibila como siempre.</p>','info')}
+<p>Los préstamos atrasados aparecen en Atrasados y en Inicio. La persona recibe un aviso por email.</p>`},
+
+{id:'inspecciones',n:'2.5',t:'Validar inspecciones',pics:[['revisar-inspeccion','Revisar inspección']],body:`
+<p class="lead">Desde Inicio, tocá <b class="ui">Revisar inspección</b>, o andá a Controles → Por validar. Revisá el informe del técnico y elegí:</p>
+<div class="scroll"><table class="stack"><thead><tr><th>Opción</th><th>Qué hace</th></tr></thead><tbody>
+<tr><td><strong>Aprobar</strong></td><td>Valida la inspección. Si es Apto y el equipo tiene "Inspección cada (días)", fija el próximo control. <strong>No cambia el estado</strong>: si estaba bloqueado, sigue bloqueado.</td></tr>
+<tr><td><strong>Aprobar y liberar</strong></td><td>Solo si el resultado es Apto. Además deja el equipo <span class="st ok">Disponible</span>. Pide una Conclusión y, si no hay control vigente, el Próximo control.</td></tr>
+<tr><td><strong>Rechazar</strong></td><td>Pide una Conclusión. El técnico tiene que inspeccionar de nuevo.</td></tr>
+</tbody></table></div>
+${note('Orden importante','<p>Si hay una inspección <strong>No apto</strong> o <strong>Con observaciones</strong> sin revisar, resolvela primero. Si no, una inspección Apto posterior no puede liberar el equipo: la app responde "Hay otra inspección con observaciones pendiente."</p>')}`},
+
+{id:'incidentes',n:'2.6',t:'Incidentes y reemplazos',pics:[['incidente','Incidente']],body:`
+<h4 style="margin-top:0">Incidentes de Daño o Faltante</h4>
+<p>Bloquean el equipo. Para liberarlo:</p>
+<ul><li><strong>EPP y equipos:</strong> hacé una inspección nueva y validala con <b class="ui">Aprobar y liberar</b>. El incidente se cierra solo.</li><li><strong>Vehículos y bolsos:</strong> después de arreglarlo, tocá <b class="ui">Liberar equipo</b>. Eso cierra los incidentes.</li></ul>
+<p>Un incidente de Daño o Faltante <strong>no se cierra a mano</strong> mientras el equipo esté bloqueado: se cierra al liberarlo.</p>
+<h4>Incidentes de tipo Otro</h4>
+<p>Se cierran desde Controles → Incidentes, escribiendo una Conclusión.</p>
+<h4>Si el equipo no tiene arreglo</h4>
+${ol(['En la ficha, tocá <b class="ui">Reemplazar equipo</b>.','Elegí un equipo del mismo tipo y sector, que ya esté disponible.','Adjuntá un documento: es obligatorio.'])}
+<p>El equipo anterior queda dado de baja.</p>
+${note('Equipos dentro de un bolso','<p>El botón dice <b class="ui">Reemplazar en AS-B…</b>: proponé el cambio de contenido del bolso y aprobalo. Mientras tanto, un elemento bloqueado deja todo el bolso No disponible.</p>','info')}`},
+
+{id:'controles',n:'2.7',t:'Controles, vencimientos y turnos',pics:[['controles','Controles'],['renovar','Renovar vigencia'],['turno','Agendar turno']],body:`
+<p class="lead">Controles reúne en una pantalla los vencimientos de las próximas semanas, los turnos, los incidentes, lo que está por validar y el estado de los recordatorios por email.</p>
+<h4>Renovar</h4>
+${ol(['Indicá <strong>Realizado el</strong>.','Revisá el <strong>Próximo vencimiento</strong> (la app lo propone).','Escribí un <strong>Motivo</strong>. El comprobante es opcional.'])}
+<p>Renovar no quita otros bloqueos, como un daño.</p>
+<h4>Marcar pagado</h4>
+<p>Es para el pago mensual del seguro. Solo se puede marcar cuando está por vencer o ya venció. Avisa, pero no impide retirar.</p>
+<h4>Agendar turno</h4>
+${ol(['Completá fecha, hora, duración, lugar y Responsable.','Después de la hora del turno, tocá <b class="ui">Cerrar turno</b> y elegí: <strong>Hecho → Renovar</strong> (abre la renovación), <strong>No se hizo</strong> o <strong>Reprogramar</strong>.'])}
+${note('Turnos y retiros','<p>Mientras el turno está agendado, nadie puede retirar el equipo si el turno cae entre el retiro y la devolución. Tampoco se puede agendar un turno mientras el equipo está prestado.</p>')}
+<h4>Agregar control</h4>
+${ol(['Elegí un control frecuente, o escribí uno nuevo.','Indicá la frecuencia y la anticipación del aviso.','Marcá <strong>Obligatorio</strong> si el equipo no debe usarse cuando vence.'])}
+${note('Recordatorios por email','<ul><li>A encargados y Administración del sector: a los 30, 15, 7 y 0 días del vencimiento, o desde la anticipación propia del control.</li><li>Quien tiene un préstamo recibe el aviso de su devolución.</li><li>El responsable de un turno recibe un aviso el día anterior a las 9:00 y otro el mismo día a las 7:30.</li></ul>','info')}`},
+
+{id:'bolsos',n:'2.8',t:'Bolsos',pics:[['bolsos','Bolsos'],['revisar-bolso','Revisar bolso']],body:`
+<h4 style="margin-top:0">Revisar una propuesta</h4>
+${ol(['En <strong>Bolsos por aprobar</strong>, tocá <b class="ui">Revisar</b>. También desde Inicio o desde la ficha del bolso, con Revisar bolso.','Elegí <b class="ui">Aprobar contenido</b> o <b class="ui">Rechazar</b> (con motivo).'])}
+<p>Al aprobar un bolso nuevo, queda verificado y listo para retirar.</p>
+<h4>Cambiar el contenido vos mismo</h4>
+${ol(['En la ficha del bolso, tocá <b class="ui">Editar contenido</b>.','Tocá <b class="ui">Enviar para aprobación</b>.','Aprobala.'])}
+<h4>Plantillas</h4>
+<ul><li>Definen qué tiene que tener un bolso, por ejemplo 1 arnés, 1 casco, 1 cuerda y 1 conector.</li><li>Si a un bolso le falta algo de su plantilla, aparece como <strong>Contenido incompleto</strong>.</li><li>Se crean en Bolsos → Plantillas → <b class="ui">Crear plantilla</b> y se aplican con <b class="ui">Asignar plantilla</b> en la ficha del bolso.</li></ul>
+${note('Desarmar bolso','<p>Está en la ficha del bolso. Libera los elementos y solo se puede hacer cuando el bolso está en el depósito. Usalo con los bolsos temporales al terminar la actividad.</p>','info')}`},
+
+{id:'entre-sectores',n:'2.9',t:'Préstamos entre sectores',pics:[['entre-sectores','Préstamo entre sectores']],body:`
+<p class="lead">Las solicitudes las decide el encargado del <strong>sector dueño</strong> del equipo.</p>
+${ol(['Abrí la solicitud desde Inicio (<b class="ui">Revisar solicitud</b>) o desde Préstamos → Entre sectores.','Tocá <b class="ui">Aprobar préstamo</b>, o <b class="ui">Rechazar</b> con un motivo. La app no deja aprobar si algún control vence antes de "Hasta".','El otro sector lo retira desde la vista Personal.','Cuando la persona declara la devolución, la recibe el encargado del sector dueño: Préstamos → <b class="ui">Recibir</b>.','Si lo metieron en un bolso del otro sector, primero hay que sacarlo de ese bolso.','Tocá <b class="ui">Verificar devolución al sector</b> para cerrar el préstamo.'])}
+${note('Para pedir vos un equipo del otro sector','<p>La consola no tiene ese botón: pasá a <b class="ui">Personal</b>, tocá el equipo con la etiqueta Otro sector y usá Solicitar préstamo.</p>','info')}`},
+
+{id:'materiales',n:'2.10',t:'Materiales',pics:[['materiales','Materiales']],body:`
+<p class="lead">Productos que se manejan por cantidad: guantes, cintas, eslingas.</p>
+${ol(['<b class="ui">Registrar lote</b>: código, material, lote, unidad, cantidad, ubicación y origen. El lote queda con <strong>Conteo pendiente</strong>.','<b class="ui">Verificar conteo</b>: contá los materiales físicamente e ingresá la cantidad. Recién ahí se puede retirar del lote.','Cuando vuelven materiales prestados, tocá <b class="ui">Recibir</b> e indicá cuántos llegaron y cuántos dañados.','Para correcciones, <b class="ui">Corregir cantidad</b>. Para un lote vencido, <b class="ui">Registrar baja del lote</b>.'])}
+${note('Consumible o retornable','<ul><li><strong>Consumible:</strong> se descuenta del lote y no vuelve.</li><li><strong>Retornable:</strong> tiene fecha Devolver antes de. La persona declara la devolución y vos la recibís. Lo que vuelve dañado se descuenta del lote.</li></ul>','info')}`},
+
+{id:'auditoria',n:'2.11',t:'Auditoría y relevamientos',pics:[['auditoria','Auditoría']],body:`
+<div class="scroll"><table class="stack"><thead><tr><th>Bloque</th><th>Qué significa</th></tr></thead><tbody>
+<tr><td><strong>Cobertura</strong></td><td>Cuántos equipos están relevados, por validar o sin relevar.</td></tr>
+<tr><td><strong>Qué falta</strong></td><td>Problemas, validaciones pendientes, equipos sin relevar y datos faltantes, cada uno con su botón Verificar.</td></tr>
+<tr><td><strong>Relevamientos</strong></td><td>Los recorridos físicos por el depósito, abiertos o congelados.</td></tr>
+<tr><td><strong>Paquete</strong></td><td>Archivos para el auditor: Generar paquete, Planilla de conteo e Índice de documentos.</td></tr>
+</tbody></table></div>
+<h4>Relevamiento físico</h4>
+${ol(['Tocá <b class="ui">Iniciar relevamiento</b>.','Recorré el depósito. En cada equipo tocá <b class="ui">Verificar</b> y elegí Encontrado o Registrar diferencia.','Verificá también el conteo de los lotes de Materiales del sector.','Tocá <b class="ui">Congelar auditoría</b>. Queda una foto fija del sector, que <strong>no se puede modificar</strong>.','Descargá el <b class="ui">Paquete</b> para entregar al auditor.'])}
+${note('Tablero del depósito','<p>En <span class="code">/tablero</span> hay una pantalla para el televisor del depósito: críticos, lo que tiene que volver o está atrasado, lo que está fuera de servicio y lo que vence pronto. Se actualiza solo. Usá una cuenta de Consulta interna exclusiva para el televisor; para un solo sector, <span class="code">/tablero?area=Operaciones</span>.</p>','info')}`},
+
+{id:'rutina',n:'',t:'Resumen: tu rutina',pics:[],body:`
+<p class="lead">Lo que conviene hacer siempre, en este orden.</p>
+${ol(['<strong>Todos los días:</strong> abrí Inicio y trabajá Prioridades de arriba hacia abajo: devoluciones por recibir, inspecciones por validar, solicitudes de otro sector y bolsos por aprobar.','<strong>Cuando vuelve un equipo:</strong> recibilo apenas lo dejan. Si vino dañado, elegí Con daño: queda en cuarentena hasta una inspección apta.','<strong>Cada semana:</strong> revisá Controles. Renová lo que vence, agendá turnos de VTV o service y marcá pagos del seguro.','<strong>Cuando entra un equipo nuevo:</strong> registrar o importar → relevamiento → habilitación. Hasta entonces nadie lo puede retirar.','<strong>Antes de una auditoría:</strong> relevamiento físico completo, conteo de materiales, Congelar auditoría y Paquete.'])}`},
+];
+
+const MSG=[
+['Verificación física pendiente / Relevamiento pendiente / Pendiente de relevamiento','Todos','Relevamiento → Encontrado (2.2)'],
+['No encontrado en relevamiento','Todos','Buscarlo y marcarlo Encontrado en un relevamiento'],
+['Requiere inspección / Observación de daño: requiere inspección / Archivo indica Vencido: requiere inspección','EPP y equipos','Inspección con Nota, aprobada por otra persona'],
+['Requiere inspección','Vehículos','Revisarlo y Liberar equipo'],
+['Control sin fecha / Fecha de control pendiente / Control vencido','Todos','EPP: completar Próximo control al aprobar la inspección. Vehículos: Renovar el control principal'],
+['"Seguro vencido", "VTV sin fecha" (nombre del control + vencido / sin fecha)','Todos','Renovar ese control'],
+['Certificado pendiente / Control o evidencia pendiente','Sobre todo vehículos','Renovar el control obligatorio vencido (seguro, matafuego…)'],
+['Inspección pendiente','EPP y equipos','Inspección → Aprobar y liberar'],
+['Inspección por validar','EPP y equipos','Revisar inspección'],
+['Habilitación técnica pendiente','Vehículos y bolsos (en la vista Personal, también EPP)','Liberar equipo'],
+['Daño informado / Faltante informado','Todos','EPP: inspección apta → Aprobar y liberar. Vehículo o bolso: arreglarlo y Liberar equipo. Sin arreglo: Reemplazar equipo'],
+['No apto informado / Observaciones pendientes','EPP y equipos','Primero revisar esa inspección (Aprobar o Rechazar). Con el equipo reparado, inspección nueva → Aprobar y liberar. Sin arreglo: Reemplazar equipo'],
+['Vida útil vencida','EPP y equipos','Reemplazar equipo. Si la fecha estaba mal cargada, corregila en Editar ficha y volvé a liberar'],
+['Cambio de vida útil pendiente de liberación','Todos','Alguien cambió el fin de vida útil en la ficha: hay que volver a liberar'],
+['Armado pendiente / Armado rechazado','Bolsos','Revisar bolso / volver a armarlo'],
+['Contenido incompleto','Bolsos','Falta algo de la plantilla: proponer un cambio de contenido'],
+['Devuelto al proveedor','Vehículos alquilados','Reincorporar, y después relevamiento y liberación'],
+['"El equipo tiene un turno de…" / "Hay controles que vencen antes de la devolución prevista."','Al retirar','Elegir otra fecha de devolución, o reprogramar el turno o renovar el control'],
+['"Se requiere préstamo entre sectores aprobado hasta la fecha de devolución."','Al retirar equipos de otro sector','La fecha de devolución no puede pasar de "Hasta"'],
+['Préstamo entre sectores vencido','Equipos de otro sector','Pasó la fecha "Hasta": pedir un préstamo nuevo'],
+['Pago de seguro (no bloquea)','Vehículos','Avisa, pero no impide retirar. Marcar pagado'],
+];
+
+const EST=[
+['Disponible','Se puede retirar','—','ok'],
+['En uso','Alguien lo tiene retirado','Quien lo tiene, al devolverlo','wait'],
+['Devolución pendiente / En recepción','Se declaró la devolución y falta recibirla','Encargado: Recibir','wait'],
+['Verificación física pendiente / Relevamiento pendiente','Equipo nuevo o importado que nadie verificó todavía','Encargado: relevamiento (2.2)','warn'],
+['Inspección pendiente','Ya se verificó en el relevamiento y falta una inspección apta','Personal inspecciona; encargado valida','warn'],
+['Inspección por validar','Hay una inspección enviada sin revisar','Encargado: Revisar inspección','warn'],
+['Habilitación técnica pendiente','Ya se verificó, pero todavía no se liberó. En la vista Personal también aparece así para los EPP','Encargado: Liberar equipo (vehículos y bolsos) o validar una inspección apta (EPP)','warn'],
+['Daño informado / Faltante informado / No apto informado','Alguien reportó un problema','Inspección apta y liberación, o reemplazo','bad'],
+['Control vencido','Venció un control obligatorio','Encargado: Renovar','bad'],
+['Vida útil vencida','El equipo llegó al fin de su vida útil','Encargado: Reemplazar equipo','bad'],
+['Daño informado con ubicación "Base · Cuarentena"','Se recibió con daño','Inspección apta y liberación','bad'],
+['Armado pendiente','Bolso nuevo esperando aprobación','Encargado: Revisar bolso','warn'],
+['Contenido incompleto','Al bolso le falta algo de su plantilla','Proponer un cambio de contenido','warn'],
+['Prestado a otro sector','Está prestado formalmente al otro sector','Su sector cierra el préstamo','wait'],
+['Devuelto al proveedor','Vehículo alquilado que ya se devolvió','Reincorporar, si vuelve',''],
+['Dado de baja','Salió del inventario para siempre','—',''],
+];
+
+const Q=[
+['Un técnico declaró la devolución de un arnés marcando Daño. Al recibirlo, ¿qué pasa?',['Podés marcarlo Recibido y queda disponible','Recibido aparece deshabilitado: elegís Con daño y queda en cuarentena con un incidente','Se rechaza la devolución'],1,'Si la persona declaró daño, solo podés elegir Con daño: queda No disponible y se abre un incidente.'],
+['¿Qué diferencia hay entre Aprobar y Aprobar y liberar una inspección Apto?',['Ninguna','Aprobar valida pero no cambia el estado; Aprobar y liberar además lo deja Disponible','Aprobar deja el equipo disponible; Aprobar y liberar lo da de baja'],1,'Aprobar no cambia el estado: si estaba bloqueado, sigue bloqueado.'],
+['Importaste 20 equipos nuevos. ¿Cuál es el orden para que se puedan retirar?',['Importar → Disponible','Importar → Relevamiento (Encontrado) → Habilitación','Importar → Liberar equipo directamente'],1,'Todo equipo nuevo empieza bloqueado: relevamiento y habilitación antes de quedar Disponible.'],
+['Importaste una camioneta con la VTV vencida. ¿Qué secuencia la habilita?',['Encontrado → Renovar VTV → Liberar equipo','Encontrado → Registrar inspección → Aprobar y liberar','Liberar equipo y después renovar la VTV'],0,'Los vehículos no tienen checklist: se renueva el control y se libera con Liberación técnica.'],
+['Inspeccionaste vos un casco que decía "Requiere inspección". ¿Quién puede aprobarla?',['Vos mismo','Otra persona: otro encargado o Administración','Cualquier técnico'],1,'Con "Requiere inspección", la aprobación la tiene que hacer alguien distinto de quien inspeccionó.'],
+['Un incidente de Daño en un EPP. ¿Cómo se cierra?',['A mano, desde Controles → Incidentes','Con una inspección nueva validada con Aprobar y liberar: se cierra solo','Renovando el control principal'],1,'Los incidentes de Daño o Faltante no se cierran a mano: se cierran al liberar el equipo.'],
+['¿Sirve Liberar equipo para habilitar un vehículo con el seguro (obligatorio) vencido?',['Sí, la liberación técnica lo permite','No: primero hay que renovar el seguro','Sí, si adjuntás un documento'],1,'La liberación no sirve para saltear un vencimiento: la app la rechaza con un control obligatorio vencido.'],
+['Agendaste un turno de service para el jueves. ¿Qué pasa con los retiros?',['Nada cambia','Nadie puede retirar la camioneta si el turno cae entre el retiro y la devolución','Se cancelan los préstamos activos'],1,'Un turno agendado bloquea los retiros que lo abarquen.'],
+['Capacitaciones pide un detector de Operaciones. ¿Quién decide?',['El encargado de Capacitaciones','El encargado de Operaciones, sector dueño del equipo','Administración siempre'],1,'Las solicitudes las decide el encargado del sector dueño del equipo.'],
+['Registraste un lote nuevo de guantes. ¿Por qué nadie puede retirarlos?',['Porque falta aprobar un bolso','Porque queda con Conteo pendiente hasta que uses Verificar conteo','Porque los consumibles no se retiran'],1,'Un lote nuevo queda con Conteo pendiente hasta contarlo físicamente.'],
+['Al terminar el relevamiento tocás Congelar auditoría. ¿Qué implica?',['Que podés seguir editando el relevamiento','Que queda una foto fija del sector que no se puede modificar','Que se bloquean todos los equipos'],1,'Congelar deja una foto fija; después descargás el Paquete para el auditor.'],
+['La app dice "Hay otra inspección con observaciones pendiente." al querer liberar. ¿Qué hacés?',['Renovás el control','Revisás primero la inspección No apto o Con observaciones','Das de baja el equipo'],1,'Una inspección con observaciones sin revisar impide liberar con una Apto posterior.'],
+];
+const APRUEBA=10;
+
+const $=s=>document.querySelector(s);
+const MODS=M.filter(m=>m.n);
+let done=new Set();
+try{done=new Set(JSON.parse(localStorage.getItem('ind-enc-done')||'[]'))}catch(e){}
+const save=()=>{try{localStorage.setItem('ind-enc-done',JSON.stringify([...done]))}catch(e){}};
+
+$('#nav').innerHTML='<a href="#empezar">Tu rol</a>'+M.map(m=>`<a href="#${m.id}" data-id="${m.id}">${m.n?m.n+' ':''}${m.t}</a>`).join('')+'<a href="#mensajes">Mensajes</a><a href="#estados">Estados</a><a href="#test">Test</a>';
+
+$('#mods').innerHTML=M.map(m=>`
+<section class="band mod" id="${m.id}"><div class="wrap"${m.pics.length?'':' style="grid-template-columns:minmax(0,1fr)"'}>
+  <div>
+    ${m.n?`<div class="num">Módulo ${m.n}</div>`:''}
+    <h2>${m.t}</h2>
+    <div style="margin-top:14px">${m.body}</div>
+    ${m.n?`<button class="btn seen" type="button" data-id="${m.id}" aria-pressed="false">Marcar como visto</button>`:''}
+  </div>
+  ${m.pics.length?`<div class="pics">${m.pics.map(p=>pic(p[0],p[1])).join('')}</div>`:''}
+</div></section>`).join('');
+
+$('#msgs').innerHTML=MSG.map(r=>`<tr><td><strong>${r[0]}</strong></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+$('#estrows').innerHTML=EST.map(r=>`<tr><td><span class="st ${r[3]}">${r[0]}</span></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+
+$('#buscar').addEventListener('input',e=>{
+  const q=e.target.value.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');let n=0;
+  document.querySelectorAll('#msgs tr').forEach(tr=>{const t=tr.textContent.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');const v=!q||t.includes(q);tr.hidden=!v;if(v)n++});
+  $('#nomsg').hidden=n>0;
+});
+
+function paint(){
+  const n=MODS.filter(m=>done.has(m.id)).length;
+  $('#pbar').style.width=(n/MODS.length*100)+'%';
+  $('#ptxt').textContent=`${n} de ${MODS.length} módulos`;
+  document.querySelectorAll('.seen').forEach(b=>{const on=done.has(b.dataset.id);b.setAttribute('aria-pressed',on);b.textContent=on?'Visto ✓':'Marcar como visto'});
+  document.querySelectorAll('#nav a[data-id]').forEach(a=>a.classList.toggle('done',done.has(a.dataset.id)));
+}
+const dlg=$('#zoom');
+document.addEventListener('click',e=>{
+  const s=e.target.closest('.shot');
+  if(s){const im=s.querySelector('img');$('#zimg').src=im.src;$('#zimg').alt=im.alt;$('#zcap').textContent=s.dataset.cap;try{dlg.showModal()}catch(x){};return}
+  const b=e.target.closest('.seen');if(!b)return;
+  const id=b.dataset.id;done.has(id)?done.delete(id):done.add(id);save();paint();
+  if(done.has(id)){const i=M.findIndex(m=>m.id===id);const nx=M[i+1];(nx?document.getElementById(nx.id):$('#mensajes')).scrollIntoView()}
+});
+$('#zclose').addEventListener('click',()=>dlg.close());
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
+paint();
+
+$('#quiz').innerHTML=Q.map((q,i)=>`<fieldset class="q"><p>${i+1}. ${q[0]}</p>${q[1].map((o,j)=>`<label class="opt"><input type="radio" name="q${i}" value="${j}"><span>${o}</span></label>`).join('')}<div class="why">${q[3]}</div></fieldset>`).join('');
+$('#check').addEventListener('click',()=>{
+  let ok=0,ans=0;
+  Q.forEach((q,i)=>{
+    const fs=$('#quiz').children[i],sel=fs.querySelector('input:checked');
+    fs.querySelectorAll('label').forEach((l,j)=>{l.classList.remove('right','wrong');if(j===q[2])l.classList.add('right');else if(sel&&+sel.value===j)l.classList.add('wrong')});
+    fs.classList.add('checked');if(sel){ans++;if(+sel.value===q[2])ok++}
+  });
+  $('#score').textContent=`${ok} / ${Q.length}`;
+  $('#verdict').textContent=ans<Q.length?`Te quedaron ${Q.length-ans} sin responder.`:ok>=APRUEBA?'Aprobado. Ya podés operar la consola de tu sector.':`Repasá los módulos de las respuestas en rojo y volvé a intentarlo (se aprueba con ${APRUEBA}).`;
+  if(ans===Q.length)guardar(ok);
+});
+$('#reset').addEventListener('click',()=>{$('#quiz').reset();$('#quiz').querySelectorAll('.q').forEach(f=>{f.classList.remove('checked');f.querySelectorAll('label').forEach(l=>l.classList.remove('right','wrong'))});$('#score').textContent='';$('#verdict').textContent='';$('#saved').textContent=''});
+
+/* ---- Registro de resultados (Google Sheets vía Apps Script) ---- */
+/* La URL del registro se configura una sola vez en ../config.js (ver README.md) */
+const REGISTRO_URL=(window.INDUCCION_CONFIG&&window.INDUCCION_CONFIG.registroUrl)||'';
+const msg=(t,k)=>{const s=$('#saved');s.textContent=t;s.className='saved '+(k||'')};
+try{const n=localStorage.getItem('ind-inv-nombre'),s=localStorage.getItem('ind-inv-sector');if(n)$('#nombre').value=n;if(s)$('#sector').value=s}catch(e){}
+async function guardar(ok){
+  const nombre=$('#nombre').value.trim(),sector=$('#sector').value;
+  if(!nombre||!sector){msg('Para que quede registrado, completá tu nombre y sector arriba y volvé a tocar Corregir.','err');$('#nombre').focus();return}
+  try{localStorage.setItem('ind-inv-nombre',nombre);localStorage.setItem('ind-inv-sector',sector)}catch(e){}
+  if(!REGISTRO_URL){msg('El registro todavía no está configurado (falta la URL en config.js).','err');return}
+  msg('Guardando resultado…');
+  const respuestas=Q.map((q,i)=>{const s=document.querySelector(`input[name=q${i}]:checked`);return s?+s.value+1:0}).join(' ');
+  const body=new URLSearchParams({perfil:'Encargado',nombre:nombre.slice(0,80),sector,puntaje:ok,total:Q.length,aprobado:ok>=APRUEBA?'Sí':'No',respuestas});
+  try{await fetch(REGISTRO_URL,{method:'POST',mode:'no-cors',body});msg(`Resultado registrado (${ok}/${Q.length}).`,'ok')}
+  catch(e){msg('No se pudo guardar el resultado. Revisá tu conexión y volvé a tocar Corregir.','err')}
+}
+}
+</script>
+</body>
+</html>

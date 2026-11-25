@@ -5,7 +5,9 @@
  *
  * Instalación: ver README.md del repositorio (paso 2).
  */
-const HOJA = 'Resultados';
+// Cada inducción guarda en su propia hoja de la planilla.
+const HOJAS = { Personal: 'Personal', Encargado: 'Encargados' };
+const HOJA_PERSONAL = 'Personal';
 const COLUMNAS = ['Fecha', 'Nombre', 'Sector', 'Puntaje', 'Total', 'Aprobado', 'Respuestas'];
 
 function doPost(e) {
@@ -13,7 +15,7 @@ function doPost(e) {
   lock.waitLock(10000);
   try {
     const p = (e && e.parameter) || {};
-    const hoja = obtenerHoja_();
+    const hoja = obtenerHoja_(HOJAS[p.perfil] || HOJA_PERSONAL);
     hoja.appendRow([
       new Date(),
       limpiar_(p.nombre, 80),
@@ -29,11 +31,11 @@ function doPost(e) {
   }
 }
 
-function obtenerHoja_() {
+function obtenerHoja_(nombre) {
   const libro = SpreadsheetApp.getActiveSpreadsheet();
-  let hoja = libro.getSheetByName(HOJA);
+  let hoja = libro.getSheetByName(nombre);
   if (!hoja) {
-    hoja = libro.insertSheet(HOJA);
+    hoja = libro.insertSheet(nombre);
     hoja.appendRow(COLUMNAS);
     hoja.setFrozenRows(1);
     hoja.getRange(1, 1, 1, COLUMNAS.length).setFontWeight('bold');
