@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inducción Inventario · Personal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* VOICE: claro y directo, como un instructor de depósito; rioplatense, voseo.
+   IDEA: el propio manual de campo de Alto Sur, convertido en recorrido con el celular en la mano.
+   PICTURE: las pantallas reales de la app dentro de un marco de celular, junto a cada paso.
+   COLOUR and TYPE: grafito #1d1d1d, papel #f3f2ee, rojo Alto Sur #e3101d; Barlow Condensed + Inter, códigos en mono.
+   LAYOUT: portada oscura a sangre, fila de módulos, cada módulo = teléfono + pasos; cierre con test. */
+:root{color-scheme:light dark;
+--bg:light-dark(#f3f2ee,#151515);--card:light-dark(#fff,#202020);--ink:light-dark(#1b1b1b,#efeeea);--mute:light-dark(#5d5b56,#a9a7a1);
+--line:light-dark(#dedcd5,#333);--dark:#1d1d1d;--red:#e3101d;--redt:light-dark(#c00c18,#ff5a63);--ok:light-dark(#1d7a3a,#5fd086);--warn:light-dark(#a24a00,#f0a050);--blue:light-dark(#1f4fbf,#7fa5ff);--soft:light-dark(#ebe9e3,#262626)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:"Barlow Condensed",Impact,sans-serif;font-weight:700;line-height:1.05;text-wrap:balance;margin:0;text-transform:uppercase}
+h2{font-size:clamp(32px,5vw,48px)}h3{font-size:24px;margin-bottom:8px}
+p{margin:0 0 12px;max-width:68ch}
+.band{padding:clamp(28px,4vw,64px) max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+.code{font-family:"JetBrains Mono",monospace;font-size:13px;background:var(--dark);color:#fff;padding:2px 7px;white-space:nowrap}
+b.ui{font-weight:600;color:var(--ink);background:var(--soft);padding:1px 6px;border-radius:3px;white-space:nowrap}
+.scroll{overflow-x:auto}html{scroll-padding-top:72px;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+
+/* Portada */
+.hero{background:var(--dark);color:#f3f2ee;border-left:10px solid var(--red)}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(24px,5vw,72px);align-items:center}
+.hero img.logo{width:74px;margin-bottom:28px}
+.hero h1{font-size:clamp(48px,8vw,96px)}
+.hero h1 i{color:var(--red);font-style:normal}
+.hero .sub{font-size:19px;color:#cfcdc7;margin:18px 0 26px}
+.prog{display:flex;align-items:center;gap:14px;max-width:460px}
+.bar{flex:1;height:10px;background:#3a3a3a}.bar i{display:block;height:100%;width:0;background:var(--red);transition:width .5s}
+.prog span{font-family:"Barlow Condensed";font-size:22px;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 20px;font:600 16px Inter,sans-serif;border:1px solid currentColor;background:none;color:inherit;cursor:pointer;text-decoration:none}
+.btn.red{background:var(--red);border-color:var(--red);color:#fff;clip-path:polygon(0 0,100% 0,100% 70%,calc(100% - 12px) 100%,0 100%)}
+.btn:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.phones{display:flex;justify-content:center;align-items:flex-start;gap:16px}
+.phone{background:#0d0d0d;border-radius:30px;padding:9px;box-shadow:0 24px 50px rgba(0,0,0,.45);width:min(260px,100%);flex:none}
+.phone img{display:block;width:100%;border-radius:22px;aspect-ratio:390/844;object-fit:cover;background:#eee}
+.phones .phone:nth-child(2){transform:translateY(36px);width:min(220px,44%)}
+
+/* Navegación */
+.nav{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line)}
+.nav .scroll{display:flex;gap:4px;padding:8px max(5vw,16px);max-width:1240px;margin:0 auto}
+.nav a{flex:none;display:flex;align-items:center;gap:6px;min-height:40px;padding:6px 12px;color:var(--ink);text-decoration:none;font-weight:500;font-size:14px;border:1px solid transparent}
+.nav a:hover{border-color:var(--line)}
+.nav a.done::before{content:"";width:8px;height:8px;background:var(--ok);border-radius:50%}
+
+/* Antes de empezar */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin-top:24px}
+.card{background:var(--card);border:1px solid var(--line);padding:22px}
+.rule{display:grid;grid-template-columns:52px minmax(0,1fr);gap:14px}
+.rule .n{font:700 46px/1 "Barlow Condensed";color:var(--red)}
+.rule p{margin:0}
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin-top:22px}
+.flow div{flex:1 1 150px;background:var(--card);border:1px solid var(--line);padding:14px}
+.flow div small{display:block;color:var(--mute);font-size:13px}
+.flow div strong{display:block;font-family:"Barlow Condensed";font-size:22px;text-transform:uppercase;line-height:1.1}
+.flow .arrow{flex:0 0 auto;background:none;border:0;padding:0;display:flex;align-items:center;font-size:22px;color:var(--mute)}
+.st{display:inline-flex;align-items:center;gap:6px;font-weight:600;white-space:nowrap}
+.st::before{content:"";width:9px;height:9px;background:currentColor}
+.st.ok{color:var(--ok)}.st.bad{color:var(--redt)}.st.wait{color:var(--blue)}.st.warn{color:var(--warn)}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);font-size:15px}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;font-size:13px;color:var(--mute)}
+
+/* Módulos */
+.mod{border-top:1px solid var(--line)}
+.mod .wrap{display:grid;grid-template-columns:270px minmax(0,1fr);gap:clamp(24px,5vw,64px);align-items:start}
+.mod:nth-of-type(even){background:var(--card)}
+.mod .phone{position:sticky;top:80px;box-shadow:0 14px 30px rgba(0,0,0,.18)}
+.mod .num{font:600 18px "Barlow Condensed";color:var(--red);margin-bottom:4px}
+.mod .lead{font-size:18px;color:var(--mute);margin:12px 0 22px}
+ol.steps{list-style:none;counter-reset:s;padding:0;margin:0 0 22px}
+ol.steps>li{counter-increment:s;position:relative;padding:0 0 16px 48px}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:-2px;width:32px;height:32px;display:grid;place-items:center;background:var(--dark);color:#fff;font:700 18px "Barlow Condensed"}
+ol.steps ul,.note ul{margin:6px 0 0;padding-left:20px}
+.note{border-left:4px solid var(--red);background:var(--soft);padding:16px 18px;margin:0 0 20px}
+.note.info{border-color:var(--blue)}
+.note h4{margin:0 0 6px;font-size:15px}
+.note p:last-child,.note ul:last-child{margin-bottom:0}
+.seen{margin-top:6px}
+.seen[aria-pressed=true]{background:var(--ok);border-color:var(--ok);color:#fff}
+.alt{display:flex;gap:14px;margin-top:8px}.alt .phone{position:static;width:150px;border-radius:20px;padding:6px}.alt .phone img{border-radius:15px}
+.alt p{align-self:center;color:var(--mute);font-size:14px}
+
+/* Test */
+.quiz{background:var(--dark);color:#f3f2ee}
+.quiz .q{background:#262626;border:1px solid #3a3a3a;padding:20px;margin-top:14px}
+.quiz .q p{font-weight:600;margin-bottom:12px}
+.quiz label{display:flex;gap:10px;align-items:flex-start;min-height:44px;padding:10px 12px;border:1px solid #444;margin-top:8px;cursor:pointer}
+.quiz input{width:18px;height:18px;margin-top:3px;accent-color:var(--red);flex:none}
+.quiz label.right{border-color:#5fd086;background:rgba(95,208,134,.12)}
+.quiz label.wrong{border-color:#ff5a63;background:rgba(255,90,99,.12)}
+.quiz .why{display:none;margin-top:10px;color:#cfcdc7;font-size:15px}
+.quiz .checked .why{display:block}
+.score{font:700 clamp(40px,6vw,64px)/1 "Barlow Condensed";margin-top:24px}
+.who{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px;margin-top:22px}
+.fld{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:14px}
+.fld input,.fld select{font:16px Inter,sans-serif;min-height:46px;padding:10px 12px;background:#262626;color:#f3f2ee;border:1px solid #555}
+.saved{font-weight:600}.saved.ok{color:#5fd086}.saved.err{color:#ff8a90}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:12px}
+.kpis div{background:var(--card);border:1px solid var(--line);padding:16px}
+.kpis b{display:block;font:700 40px/1 "Barlow Condensed"}.kpis span{color:var(--mute);font-size:14px}
+td.num{text-align:right;white-space:nowrap}
+.foot{background:var(--dark);color:#a9a7a1;border-top:1px solid #333;font-size:14px}
+.foot .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between}
+
+@media(max-width:860px){.hero .wrap{grid-template-columns:minmax(0,1fr)}.phones{order:-1}.phones .phone{width:min(200px,46%)}.phones .phone:nth-child(2){width:min(170px,40%)}
+.mod .wrap{grid-template-columns:minmax(0,1fr)}.mod .phone{position:static;width:min(240px,70%);margin:0 auto}}
+@media(max-width:600px){table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flow-root;border:0;padding:3px 12px;padding-inline-start:8.5em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:7.5em;margin-inline-start:-8em;white-space:normal;color:var(--mute);font-size:12px}.stack td:empty{display:none}
+.flow .arrow{transform:rotate(90deg);flex-basis:100%;justify-content:center}.hero{border-left-width:6px}}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+
+<header class="band hero">
+  <div class="wrap">
+    <div>
+      <img class="logo" src="img/logo.png" alt="Alto Sur">
+      <h1>Inducción<br>Inventario<i>.</i></h1>
+      <p class="sub">Para técnicos e instructores. En unos 20 minutos aprendés a retirar, devolver, inspeccionar y reportar equipos desde el celular en <strong>inventario.altosur.com.ar</strong>.</p>
+      <div class="prog" aria-live="polite"><div class="bar"><i id="pbar"></i></div><span id="ptxt">0 de 9 módulos</span></div>
+      <div class="acts"><a class="btn red" href="#empezar">Empezar la inducción</a><a class="btn" href="#test">Ir al test final</a></div>
+    </div>
+    <div class="phones" aria-hidden="true">
+      <div class="phone"><img src="img/mis-equipos.jpg" alt=""></div>
+      <div class="phone"><img src="img/retirar.jpg" alt=""></div>
+    </div>
+  </div>
+</header>
+
+<nav class="nav" aria-label="Módulos"><div class="scroll" id="nav"></div></nav>
+
+<section class="band" id="empezar">
+  <div class="wrap">
+    <h2>Antes de empezar</h2>
+    <p class="lead" style="font-size:18px;color:var(--mute);margin-top:12px">La app registra quién tiene cada equipo, en qué estado está y cuándo vence cada control. Vos trabajás desde la <strong>vista Personal</strong>, en el celular. El encargado de tu sector trabaja en la computadora y confirma lo que hacés.</p>
+    <div class="grid2">
+      <div class="card rule"><span class="n">1</span><p><strong>Toda acción tuya la confirma el encargado.</strong> Mientras no la confirma, el equipo queda en un estado intermedio (ver abajo).</p></div>
+      <div class="card rule"><span class="n">2</span><p><strong>Recibido no es lo mismo que apto.</strong> Un equipo que vuelve con daño se recibe igual, pero queda No disponible hasta que se inspecciona y se libera.</p></div>
+      <div class="card rule"><span class="n">3</span><p><strong>Un equipo nuevo empieza bloqueado.</strong> Pasa por relevamiento y habilitación antes de poder retirarse.</p></div>
+      <div class="card rule"><span class="n">4</span><p><strong>Cada sector maneja lo suyo.</strong> Hay dos: Operaciones y Capacitaciones. Para usar un equipo del otro sector se pide un préstamo entre sectores.</p></div>
+    </div>
+
+    <h3 style="margin-top:40px">Qué pasa después de cada acción tuya</h3>
+    <div class="scroll"><table class="stack">
+      <thead><tr><th>Vos…</th><th>Estado mientras tanto</th><th>El encargado…</th></tr></thead>
+      <tbody>
+        <tr><td>declarás una devolución</td><td><span class="st wait">En recepción</span> — el equipo sigue a tu cargo</td><td>recibe la devolución</td></tr>
+        <tr><td>enviás una inspección</td><td><span class="st wait">Por validar</span> — la fecha de control no cambia</td><td>valida la inspección</td></tr>
+        <tr><td>proponés un bolso</td><td><span class="st wait">Armado pendiente</span></td><td>aprueba el bolso</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 style="margin-top:40px">El recorrido de un préstamo</h3>
+    <div class="flow" role="list">
+      <div role="listitem"><small>Estado inicial</small><strong>Disponible</strong><span class="st ok">Se puede retirar</span></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div role="listitem"><small>Tocás Confirmar retiro</small><strong>En uso</strong>A tu cargo</div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div role="listitem"><small>Tocás Declarar devolución</small><strong>En recepción</strong>Sigue a tu cargo</div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div role="listitem"><small>El encargado lo recibe</small><strong>Disponible</strong><span class="st bad">o No disponible si volvió con daño</span></div>
+    </div>
+
+    <h3 style="margin-top:40px">Tipos de equipo que vas a manejar</h3>
+    <div class="scroll"><table class="stack">
+      <thead><tr><th>Tipo</th><th>Qué incluye</th><th>¿Lo inspeccionás con checklist?</th></tr></thead>
+      <tbody>
+        <tr><td><strong>EPP</strong></td><td>Arnés, casco, cuerda, conector</td><td>Sí: Bien / Observación / Mal</td></tr>
+        <tr><td><strong>Equipo / instrumento</strong></td><td>Detectores, herramientas, instrumentos</td><td>Sí, igual que un EPP</td></tr>
+        <tr><td><strong>Vehículo</strong></td><td>Camionetas propias o alquiladas</td><td>No</td></tr>
+        <tr><td><strong>Bolso</strong></td><td>Un conjunto de equipos que se retira junto (código <span class="code">AS-B…</span>)</td><td>No, se revisa su contenido</td></tr>
+        <tr><td><strong>Material</strong></td><td>Guantes, cintas, eslingas: se manejan por cantidad</td><td>No</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note info" style="margin-top:20px"><p><strong>La app tiene tres pestañas abajo:</strong> <b class="ui">Mis equipos</b> · <b class="ui">Escanear</b> · <b class="ui">Historial</b>. Si un botón no te aparece, tu perfil no lo tiene habilitado: pedíselo a Administración.</p></div>
+  </div>
+</section>
+
+<main id="mods"></main>
+
+<section class="band" id="mensajes">
+  <div class="wrap">
+    <h2>Mensajes que te pueden aparecer</h2>
+    <p class="lead" style="font-size:18px;color:var(--mute);margin:12px 0 22px">Casi todos los bloqueos los resuelve el encargado. Tu parte es leer el mensaje, no forzar el retiro y avisar.</p>
+    <div class="scroll"><table class="stack">
+      <thead><tr><th>Mensaje</th><th>Qué significa</th><th>Qué hacés vos</th></tr></thead>
+      <tbody id="msgs"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<section class="band quiz" id="test">
+  <div class="wrap">
+    <h2>Test final</h2>
+    <p style="color:#cfcdc7;margin-top:12px">Diez preguntas sobre lo que acabás de ver. Elegí una respuesta en cada una y tocá <strong>Corregir</strong>.</p>
+    <div class="who">
+      <label class="fld">Nombre y apellido<input id="nombre" autocomplete="name" required></label>
+      <label class="fld">Sector<select id="sector"><option value="">Elegí tu sector</option><option>Operaciones</option><option>Capacitaciones</option></select></label>
+    </div>
+    <form id="quiz"></form>
+    <div class="acts"><button class="btn red" id="check" type="button">Corregir</button><button class="btn" id="reset" type="button" style="color:#f3f2ee">Volver a empezar</button></div>
+    <div class="score" id="score" aria-live="polite"></div>
+    <p id="verdict" style="color:#cfcdc7"></p>
+    <p id="saved" class="saved" aria-live="polite"></p>
+  </div>
+</section>
+
+
+<footer class="band foot">
+  <div class="wrap"><span>Uso interno · Alto Sur S.R.L. · Basado en la Guía de uso, noviembre 2026</span><span>¿Dudas? Preguntale al encargado de tu sector.</span></div>
+</footer>
+
+<script>
+{
+const M=[
+{id:'mis-equipos',n:'1.1',t:'Mis equipos',img:'mis-equipos',lead:'Es la pantalla de inicio. Te muestra todo lo que tenés a tu cargo.',
+steps:[
+'<strong>En tu poder:</strong> cuántos préstamos tenés abiertos.',
+'<strong>Tus turnos:</strong> los turnos que tenés asignados, por ejemplo VTV o service.',
+'<strong>Una tarjeta por préstamo</strong>, con actividad, destino y fecha de devolución. Fijate en dos etiquetas:<ul><li><span class="st wait">En recepción · N</span>: ya declaraste la devolución y falta que el encargado la reciba.</li><li><span class="st bad">Atrasado</span>: se pasó la fecha de devolución.</li></ul>',
+'<strong>Accesos rápidos:</strong> <b class="ui">Retirar equipo</b>, <b class="ui">Registrar inspección</b>, <b class="ui">Materiales</b> y <b class="ui">Bolsos</b>.'],
+notes:[['info','Historial','Muestra solo tus propios movimientos.']]},
+{id:'retirar',n:'1.2',t:'Retirar un equipo o bolso',img:'retirar',lead:'Cada vez que te llevás algo del depósito, lo registrás acá.',
+steps:[
+'Tocá <b class="ui">Retirar equipo</b>.',
+'Elegí el equipo: tocá <b class="ui">Escanear QR</b> o escribí el código.<ul><li>Si el equipo está dentro de un bolso, no se retira suelto: buscá o escaneá el bolso (código <span class="code">AS-B…</span>) y retiralo entero.</li></ul>',
+'Completá <strong>Actividad</strong> (la app sugiere las últimas que usaste), <strong>Destino</strong> y <strong>Devolución</strong>: Hoy, Mañana o Elegir.',
+'Tocá <b class="ui">Confirmar retiro</b>.'],
+notes:[['info','Es normal','"Sin encargado presente: queda como autorretiro" aparece siempre: así se registran todos los retiros.'],
+['warn','Cuándo la app no te deja retirar','<ul><li><strong>No disponible para retiro</strong>: el equipo está bloqueado. Avisale al encargado.</li><li><strong>"Hay controles que vencen antes de la devolución prevista."</strong> o <strong>"El equipo tiene un turno de… Elegí otra fecha de devolución."</strong>: elegí una fecha de devolución anterior.</li></ul>'],
+['info','Si te atrasás','El botón pasa a decir <b class="ui">Devolver ahora</b> y te llega un email el día del vencimiento.']]},
+{id:'devolver',n:'1.3',t:'Devolver',img:'devolver',lead:'Declarás la devolución desde el celular y dejás el equipo en el depósito.',
+steps:[
+'En la tarjeta del préstamo, tocá <b class="ui">Devolver</b>.',
+'Desmarcá lo que todavía no devolvés. Así hacés una devolución parcial.',
+'Si algo volvió dañado, marcá <b class="ui">Daño</b> en ese elemento y contá <strong>¿Qué pasó?</strong>.',
+'Tocá <b class="ui">Declarar devolución</b>.',
+'Dejá el equipo en el depósito.'],
+notes:[['warn','Importante','El equipo sigue a tu cargo hasta que el encargado lo recibe. Declarar no es lo mismo que entregar.']]},
+{id:'inspeccion',n:'1.4',t:'Inspeccionar un EPP',img:'inspeccion',lead:'Para arneses, cascos, cuerdas, conectores y equipos. Los vehículos y los bolsos no se inspeccionan así.',
+steps:[
+'Tocá <b class="ui">Registrar inspección</b> y elegí el equipo.',
+'Marcá cada punto como <span class="st ok">Bien</span>, <span class="st warn">Observación</span> o <span class="st bad">Mal</span>. Si marcás Observación o Mal, contá <strong>¿Qué viste?</strong>.',
+'La foto es opcional. Si arriba dice <strong>Requiere inspección</strong>, la <strong>Nota</strong> es obligatoria: describí lo revisado. Además la tiene que aprobar otra persona.',
+'La app calcula el resultado: <strong>Apto</strong>, <strong>Con observaciones</strong> o <strong>No apto</strong>.',
+'Tocá <b class="ui">Enviar a revisión</b>.'],
+notes:[['warn','Qué pasa después','<ul><li><strong>Con observaciones</strong> o <strong>No apto</strong> bloquean el equipo en el momento.</li><li><strong>Apto</strong> no cambia nada hasta que el encargado lo valida.</li></ul>']]},
+{id:'reportar',n:'1.5',t:'Reportar un problema',img:'reportar',lead:'Si algo se rompió o falta, avisalo apenas lo detectás.',
+steps:[
+'En el préstamo o en la ficha del equipo, tocá <b class="ui">Reportar problema</b>.',
+'Elegí el equipo y el tipo:<ul><li><strong>Daño</strong> o <strong>Faltante</strong>: bloquean el equipo en el momento.</li><li><strong>Otro</strong>: no lo bloquea.</li></ul>',
+'Contá qué pasó y tocá <b class="ui">Enviar reporte</b>.'],
+notes:[['warn','Ojo','Reportar no devuelve el equipo. Para eso usá <b class="ui">Devolver</b>.']]},
+{id:'escanear',n:'1.6',t:'Escanear y pedir equipos del otro sector',img:'escanear',alt:['solicitar','Pantalla Solicitar préstamo'],lead:'Escanear busca por QR, código o nombre. También podés escanear la etiqueta con la cámara del celular: se abre directo la ficha.',
+steps:[
+'Al tocar un equipo de tu sector se abre su ficha, con <b class="ui">Retirar equipo</b>, <b class="ui">Inspeccionar</b> y <b class="ui">Reportar problema</b>.',
+'Los equipos con la etiqueta <strong>Otro sector</strong> no se retiran directo: hay que pedirlos. Tocá el equipo, completá <strong>Hasta</strong> y <strong>Motivo</strong>, y tocá <b class="ui">Solicitar préstamo</b>.',
+'Cuando el encargado del otro sector lo aprueba, el equipo aparece en tu lista. Retiralo como cualquier otro, con una devolución que no pase de "Hasta".',
+'Pasada la fecha "Hasta", figura <strong>Préstamo entre sectores vencido</strong> y ya no se puede retirar: pedí uno nuevo.'],
+notes:[['info','Solo equipos disponibles','Si no está Disponible, la solicitud muestra "No disponible para préstamo" y el motivo.']]},
+{id:'materiales',n:'1.7',t:'Materiales',img:'materiales',alt:['salida','Pantalla Registrar salida'],lead:'Productos que se cuentan por cantidad: guantes, cintas, eslingas.',
+steps:[
+'Entrá a <b class="ui">Materiales</b> y elegí el lote. Tocá <b class="ui">Registrar salida</b>.',
+'Completá <strong>Cantidad</strong>, <strong>Actividad</strong> y <strong>Destino</strong>.',
+'Elegí si vuelve o no:<ul><li><strong>Consumible · no se devuelve</strong> viene marcado: se descuenta del lote.</li><li>Si el material vuelve, desmarcalo e indicá <strong>Devolver antes de</strong>.</li></ul>',
+'Tocá <b class="ui">Confirmar salida</b>.',
+'Para devolver: en <strong>Préstamos de materiales</strong>, tocá <b class="ui">Devolver</b>, indicá la cantidad y tocá <b class="ui">Declarar devolución</b>. El encargado la recibe.'],
+notes:[['info','Conteo pendiente','Un lote con Conteo pendiente todavía no se puede retirar. Lo que vuelve dañado se descuenta del lote.']]},
+{id:'bolsos',n:'1.8',t:'Bolsos',img:'bolso',lead:'No cambiás el contenido de un bolso directamente: proponés el cambio y el encargado lo aprueba.',
+steps:[
+'Entrá a <b class="ui">Bolsos</b>. Tocá <b class="ui">Armar bolso</b> para uno nuevo, o abrí uno existente y tocá <b class="ui">Editar contenido</b>.',
+'Completá <strong>Nombre</strong>, <strong>Plantilla</strong> (opcional) y marcá <strong>Bolso temporal</strong> si es para una actividad puntual.',
+'Agregá, quitá o reemplazá elementos y tocá <b class="ui">Revisar propuesta</b>.',
+'Tocá <b class="ui">Enviar para aprobación</b>.'],
+notes:[['warn','Mientras no se aprueba','Un bolso nuevo no se puede retirar, y uno existente mantiene su contenido anterior.'],['info','Bolso temporal','Es solo una marca. Al terminar la actividad, pedile al encargado que lo desarme.']]},
+{id:'sin-senal',n:'1.9',t:'Sin señal',img:'',lead:'Sin conexión podés guardar retiros, devoluciones, inspecciones y reportes como Pendiente de enviar.',
+steps:[
+'Un pendiente <strong>no registra nada</strong> hasta que lo enviás.',
+'Cuando vuelve la señal, tocá <b class="ui">Enviar</b> en cada pendiente desde Mis equipos. <strong>No se envían solos.</strong>',
+'Los pendientes se borran a las 24 horas o si cerrás la sesión.',
+'Sin conexión no se pueden adjuntar fotos.'],
+notes:[['info','Instalá la app en el celular (opcional)','<ul><li><strong>Android:</strong> tocá Instalar app en el aviso de la app.</li><li><strong>iPhone, desde Safari:</strong> tocá Compartir y después «Agregar a inicio».</li><li>Si cerraste el aviso, usá el menú del navegador.</li></ul>']]},
+];
+
+const MSG=[
+['No disponible para retiro','El equipo está bloqueado (a veces se indica el motivo).','No lo retires. Avisale al encargado.'],
+['Hay controles que vencen antes de la devolución prevista.','Algún control vence antes de la fecha que elegiste.','Elegí una fecha de devolución anterior.'],
+['El equipo tiene un turno de… Elegí otra fecha de devolución.','Hay un turno (VTV, service…) en ese período.','Elegí otra fecha, o pedí que reprogramen el turno.'],
+['Se requiere préstamo entre sectores aprobado hasta la fecha de devolución.','Es un equipo del otro sector.','La devolución no puede pasar de "Hasta".'],
+['Préstamo entre sectores vencido','Pasó la fecha "Hasta".','Pedí un préstamo nuevo.'],
+['Habilitación técnica pendiente / Inspección pendiente','Todavía no se liberó para usarse.','Si te lo piden, registrá una inspección. El encargado la valida.'],
+['Daño informado / Faltante informado','Alguien reportó un problema.','No se usa hasta que el encargado lo libere o reemplace.'],
+['Conteo pendiente','El lote de materiales no se contó todavía.','Esperá a que el encargado verifique el conteo.'],
+['Pago de seguro','Aviso del seguro de un vehículo.','No bloquea: podés retirar igual.'],
+];
+
+const Q=[
+['Declaraste la devolución de un arnés y lo dejaste en el depósito. ¿De quién es la responsabilidad ahora?',['Ya no es tuya','Sigue a tu cargo hasta que el encargado lo reciba','Del depósito'],1,'Queda En recepción y a tu cargo hasta que el encargado confirma la recepción.'],
+['Querés un casco que está dentro de un bolso. ¿Qué hacés?',['Lo retirás suelto escaneando su QR','Retirás el bolso entero','Le pedís al encargado que lo saque'],1,'Los equipos de un bolso no se retiran sueltos: se retira el bolso completo (código AS-B…).'],
+['Al retirar aparece "Sin encargado presente: queda como autorretiro". ¿Qué significa?',['Que hiciste algo mal','Que es normal: así se registran todos los retiros','Que el retiro quedó anulado'],1,'Es el mensaje habitual de todo retiro.'],
+['Enviaste una inspección y salió Apto. ¿Qué pasa con el equipo?',['Queda disponible al instante','No cambia nada hasta que el encargado la valida','Se bloquea'],1,'Apto no cambia nada hasta la validación. Con observaciones o No apto sí bloquean en el momento.'],
+['¿Qué tipo de reporte NO bloquea el equipo?',['Daño','Faltante','Otro'],2,'Daño y Faltante bloquean en el momento; Otro no.'],
+['Reportaste un daño en un detector que tenés retirado. ¿Ya lo devolviste?',['Sí, el reporte lo devuelve','No, para devolverlo tenés que usar Devolver','Depende del encargado'],1,'Reportar no devuelve el equipo.'],
+['La app dice "Hay controles que vencen antes de la devolución prevista." ¿Qué hacés?',['Elegís una fecha de devolución anterior','Retirás igual','Esperás al día siguiente'],0,'Algún control vence antes de tu fecha de devolución: acortá el préstamo.'],
+['Necesitás un equipo con la etiqueta "Otro sector". ¿Cómo lo conseguís?',['Lo retirás directamente','Tocás Solicitar préstamo con Hasta y Motivo','No se puede usar nunca'],1,'Se pide un préstamo entre sectores; cuando lo aprueban, lo retirás como cualquier otro.'],
+['Guardaste una devolución sin señal. ¿Qué pasa cuando vuelve la conexión?',['Se envía sola','Tenés que tocar Enviar en el pendiente; si no, se borra a las 24 h','Se registra igual aunque no la envíes'],1,'Los pendientes no se envían solos y se borran a las 24 horas o al cerrar sesión.'],
+['Querés agregar una cuerda a un bolso existente. ¿Qué pasa al enviar el cambio?',['El bolso cambia al instante','Queda como propuesta hasta que el encargado la aprueba','Se crea un bolso nuevo'],1,'Hasta la aprobación, el bolso mantiene su contenido anterior.'],
+];
+
+const $=s=>document.querySelector(s);
+let done=new Set();
+try{done=new Set(JSON.parse(localStorage.getItem('ind-inv-done')||'[]'))}catch(e){}
+const save=()=>{try{localStorage.setItem('ind-inv-done',JSON.stringify([...done]))}catch(e){}};
+
+$('#nav').innerHTML='<a href="#empezar">Antes de empezar</a>'+M.map(m=>`<a href="#${m.id}" data-id="${m.id}">${m.n} ${m.t}</a>`).join('')+'<a href="#mensajes">Mensajes</a><a href="#test">Test</a>';
+
+$('#mods').innerHTML=M.map(m=>`
+<section class="band mod" id="${m.id}"><div class="wrap">
+  ${m.img?`<div class="phone"><img src="img/${m.img}.jpg" alt="Pantalla ${m.t} en la app" loading="lazy"></div>`:`<div class="phone" aria-hidden="true" style="display:grid;place-items:center;aspect-ratio:390/860;background:#1d1d1d;color:#f3f2ee;text-align:center;padding:30px"><div><div style="font:700 64px/1 'Barlow Condensed';color:var(--red)">24 h</div><p style="margin:10px 0 0;color:#cfcdc7">Los pendientes duran 24 horas en el celular. Enviálos apenas tengas señal.</p></div></div>`}
+  <div>
+    <div class="num">Módulo ${m.n}</div>
+    <h2>${m.t}</h2>
+    <p class="lead">${m.lead}</p>
+    <ol class="steps">${m.steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+    ${m.notes.map(([k,h,b])=>`<div class="note ${k==='info'?'info':''}"><h4>${h}</h4>${b.startsWith('<ul')?b:`<p>${b}</p>`}</div>`).join('')}
+    ${m.alt?`<div class="alt"><div class="phone"><img src="img/${m.alt[0]}.jpg" alt="${m.alt[1]}" loading="lazy"></div><p>${m.alt[1]}</p></div>`:''}
+    <button class="btn seen" type="button" data-id="${m.id}" aria-pressed="false">Marcar como visto</button>
+  </div>
+</div></section>`).join('');
+
+$('#msgs').innerHTML=MSG.map(r=>`<tr><td><strong>${r[0]}</strong></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+
+function paint(){
+  const n=M.filter(m=>done.has(m.id)).length;
+  $('#pbar').style.width=(n/M.length*100)+'%';
+  $('#ptxt').textContent=`${n} de ${M.length} módulos`;
+  document.querySelectorAll('.seen').forEach(b=>{const on=done.has(b.dataset.id);b.setAttribute('aria-pressed',on);b.textContent=on?'Visto ✓':'Marcar como visto'});
+  document.querySelectorAll('#nav a[data-id]').forEach(a=>a.classList.toggle('done',done.has(a.dataset.id)));
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('.seen');if(!b)return;
+  const id=b.dataset.id;done.has(id)?done.delete(id):done.add(id);save();paint();
+  if(done.has(id)){const i=M.findIndex(m=>m.id===id);const nx=M[i+1];if(nx)document.getElementById(nx.id).scrollIntoView();else $('#mensajes').scrollIntoView()}
+});
+paint();
+
+$('#quiz').innerHTML=Q.map((q,i)=>`<fieldset class="q" style="margin-inline:0"><p>${i+1}. ${q[0]}</p>${q[1].map((o,j)=>`<label><input type="radio" name="q${i}" value="${j}"><span>${o}</span></label>`).join('')}<div class="why">${q[3]}</div></fieldset>`).join('');
+$('#check').addEventListener('click',()=>{
+  let ok=0,ans=0;
+  Q.forEach((q,i)=>{
+    const fs=$('#quiz').children[i],sel=fs.querySelector('input:checked');
+    fs.querySelectorAll('label').forEach((l,j)=>{l.classList.remove('right','wrong');if(j===q[2])l.classList.add('right');else if(sel&&+sel.value===j)l.classList.add('wrong')});
+    fs.classList.add('checked');if(sel){ans++;if(+sel.value===q[2])ok++}
+  });
+  $('#score').textContent=`${ok} / ${Q.length}`;
+  $('#verdict').textContent=ans<Q.length?`Te quedaron ${Q.length-ans} sin responder.`:ok>=8?'Aprobado. Ya podés operar la app; ante cualquier bloqueo, avisale al encargado.':'Repasá los módulos marcados en rojo y volvé a intentarlo (se aprueba con 8).';
+  if(ans===Q.length)guardar(ok);
+});
+
+/* ---- Registro de resultados (Google Sheets vía Apps Script) ---- */
+/* Pegá acá la URL de la aplicación web de Apps Script (termina en /exec). Ver README.md */
+const REGISTRO_URL='';
+const APRUEBA=8;
+const msg=(t,k)=>{const s=$('#saved');s.textContent=t;s.className='saved '+(k||'')};
+try{const n=localStorage.getItem('ind-inv-nombre'),s=localStorage.getItem('ind-inv-sector');if(n)$('#nombre').value=n;if(s)$('#sector').value=s}catch(e){}
+async function guardar(ok){
+  const nombre=$('#nombre').value.trim(),sector=$('#sector').value;
+  if(!nombre||!sector){msg('Para que quede registrado, completá tu nombre y sector arriba y volvé a tocar Corregir.','err');$('#nombre').focus();return}
+  try{localStorage.setItem('ind-inv-nombre',nombre);localStorage.setItem('ind-inv-sector',sector)}catch(e){}
+  if(!REGISTRO_URL){msg('El registro todavía no está configurado (falta REGISTRO_URL).','err');return}
+  msg('Guardando resultado…');
+  const respuestas=Q.map((q,i)=>{const s=document.querySelector(`input[name=q${i}]:checked`);return s?+s.value+1:0}).join(' ');
+  const body=new URLSearchParams({nombre:nombre.slice(0,80),sector,puntaje:ok,total:Q.length,aprobado:ok>=APRUEBA?'Sí':'No',respuestas});
+  try{
+    await fetch(REGISTRO_URL,{method:'POST',mode:'no-cors',body});
+    msg(`Resultado registrado (${ok}/${Q.length}).`,'ok');
+  }catch(e){msg('No se pudo guardar el resultado. Revisá tu conexión y volvé a tocar Corregir.','err')}
+}
+$('#reset').addEventListener('click',()=>{$('#quiz').reset();$('#quiz').querySelectorAll('.q').forEach(f=>{f.classList.remove('checked');f.querySelectorAll('label').forEach(l=>l.classList.remove('right','wrong'))});$('#score').textContent='';$('#verdict').textContent=''});
+}
+</script>
+</body>
+</html>
